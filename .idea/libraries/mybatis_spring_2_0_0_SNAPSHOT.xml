@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="mybatis-spring-2.0.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../新建工程/关于网站设计开发-2/代码/德林信息系统平台/out/artifacts/_war_exploded/WEB-INF/lib/mybatis-spring-2.0.0-SNAPSHOT.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../新建工程/关于网站设计开发-2/代码/德林信息系统平台/out/artifacts/_war_exploded/WEB-INF/lib/mybatis-3.4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../新建工程/关于网站设计开发-2/代码/德林信息系统平台/out/artifacts/_war_exploded/WEB-INF/lib/mysql-connector-java-5.1.46.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

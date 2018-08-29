@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="stackOrdered:Web exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/stackOrdered_Web_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="stackOrdered/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="stackOrdered" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Spring-4.3.18.RELEASE" />
+          <element id="library" level="project" name="Spring MVC-4.3.18.RELEASE" />
+          <element id="library" level="project" name="Spring Security-3.2.5" />
+          <element id="library" level="project" name="mybatis-spring-2.0.0-SNAPSHOT" />
+          <element id="library" level="project" name="com.google.code.gson:gson:2.8.5" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+       Copyright 2010-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+      http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+     http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring.xsd
+     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- in-memory database and a datasource
+     <jdbc:embedded-database id="dataSource">
+         <jdbc:script location="classpath:database/jpetstore-hsqldb-schema.sql"/>
+         <jdbc:script location="classpath:database/jpetstore-hsqldb-dataload.sql"/>
+     </jdbc:embedded-database>
+  -->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+        <!--<property name="prefix" value="/WEB-INF/views/" />-->
+        <!--<property name="suffix" value=".jsp" />-->
+    <!--</bean>-->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+        <!--<property name="suffix" value=".html"/>-->
+    <!--</bean>-->
+    <!--<bean id="account"    class="domain.Account" scope="session">-->
+        <!--<aop:scoped-proxy/>-->
+    <!--</bean>-->
+    <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/物品查询"></property>
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+        <property name="username" value="root"></property>
+        <property name="password" value="root"></property>
+    </bean>
+
+    <!-- transaction manager, use DataSourceTransactionManager" for JDBC local tx -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- enable component scanning and autowire (beware that this does not enable mapper scanning!) -->
+    <context:component-scan base-package="service,web,configuration" />
+
+    <!-- enable transactiondemarcation  with annotations -->
+    <tx:annotation-driven />
+
+
+    <!-- define the SqlSessionFactory -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="typeAliasesPackage" value="domain" />
+    </bean>
+
+    <mvc:annotation-driven>
+
+    </mvc:annotation-driven>
+    <!-- scan for mappers and let them be autowired -->
+    <mybatis:scan base-package="mapper" />
+
+    <bean id="str" class="java.lang.String">
+        <constructor-arg value="e:\\data"/>
+    </bean>
+    <!--<bean id="map" class="java.util.HashMap" scope="singleton" >-->
+        <!--<constructor-arg>-->
+            <!--<map key-type="java.lang.String" value-type="dtu.Test">-->
+            <!--</map>-->
+        <!--</constructor-arg>-->
+    <!--</bean>-->
+    <mvc:resources mapping="/**" location="/" />
+
+    <bean id="gson" class="com.google.gson.Gson"></bean>
+    <!--.and().exceptionHandling().accessDeniedPage("/Access_Denied");-->
+    <security:http auto-config="false" use-expressions="true">
+        <security:intercept-url pattern="/home" access="hasRole('ROLE_USER')" />
+        <security:intercept-url pattern="/admin/**" access="hasRole('ROLE_PAGE_ADMIN')" />
+        <security:intercept-url pattern="/db/**" access="hasRole('ROLE_PAGE_ADMIN') and  hasRole('ROLE_SUPER_ADMIN')" />
+        <security:intercept-url pattern="/index.html" access="hasRole('ROLE_USER')" />
+        <security:form-login login-page="/login" default-target-url="/" authentication-failure-url="/accessdenied" />
+        <security:logout logout-success-url="/logout" />
+        <security:access-denied-handler error-page="/Access_Denied"/>
+    </security:http>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider>
+            <!-- <security:user-service>
+          <security:user name="samplename" password="sweety" authorities="ROLE_USER" />
+            </security:user-service> -->
+            <security:jdbc-user-service data-source-ref="dataSource"
+
+                                        users-by-username-query="
+         SELECT USERNAME, PASSWORD, CASE ENABLED WHEN 1 THEN 'true' ELSE 'false' END 'ENABLED'
+         FROM TBL_USERS
+         WHERE USERNAME=?;"
+
+                                        authorities-by-username-query="
+        SELECT u.USERNAME, r.ROLENAME
+        FROM TBL_USERS u, TBL_USER_ROLE r
+        WHERE u.ID = r.USERID
+        AND u.USERNAME=?;"
+
+            />
+        </security:authentication-provider>
+    </security:authentication-manager>
+    <!--<http security="none" pattern="/resources/**"/>-->
+    <!--<http use-expressions="true">-->
+    <!--<intercept-url pattern="/logout" access="permitAll"/>-->
+    <!--<intercept-url pattern="/login" access="permitAll"/>-->
+    <!--<intercept-url pattern="/signup" access="permitAll"/>-->
+    <!--<intercept-url pattern="/about" access="permitAll"/>-->
+    <!--<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>-->
+    <!--<logout-->
+    <!--logout-success-url="/login?logout"-->
+    <!--logout-url="/logout"-->
+    <!--/>-->
+    <!--<form-login-->
+    <!--authentication-failure-url="/login?error"-->
+    <!--login-page="/login"-->
+    <!--login-processing-url="/login"-->
+    <!--password-parameter="password"-->
+    <!--username-parameter="username"-->
+    <!--/>-->
+    <!--</http>-->
+    <!--<authentication-manager>-->
+    <!--<authentication-provider>-->
+    <!--<user-service>-->
+    <!--<user name="user"-->
+    <!--password="password"-->
+    <!--authorities="ROLE_USER"/>-->
+    <!--<user name="admin"-->
+    <!--password="password"-->
+    <!--authorities="ROLE_USER,ROLE_ADMIN"/>-->
+    <!--</user-service>-->
+    <!--</authentication-provider>-->
+    <!--</authentication-manager>-->
+</beans>

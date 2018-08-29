@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"></meta>
+<title>HTML Tutorial</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<body>
+
+
+<div class="container">
+<form action="/uploadThing">
+  <div class="form-group">
+    <label for="exampleFormControlFile1">图片上传</label>
+    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+  </div>
+  <div class="form-row">
+    <div class="col-2">
+      <input type="text" name="name" class="form-control" placeholder="东西">
+    </div>
+    
+	<div class="col-auto my-1">
+      <label class="mr-sm-2 sr-only" for="locationSelect">Preference</label>
+      <select class="custom-select mr-sm-2" id="locationSelect" name="location">
+        
+      </select>
+    </div>
+	<div class="form-check form-check-inline">
+	  <input class="form-check-input" type="radio" name="use" id="used" value="1">
+	  <label class="form-check-label" for="inlineRadio1">常用</label>
+	</div>
+	<div class="form-check form-check-inline">
+	  <input class="form-check-input" type="radio" name="use" id="unused" value="0">
+	  <label class="form-check-label" for="inlineRadio2">不常用</label>
+	</div>
+	<div class="col-2">
+      <input type="number" name="count" class="form-control" placeholder="数量">
+    </div>
+	
+  </div>
+		<label>标签:</label>
+
+	<div class="form-row" id="tagsLabel" name="tag">
+		
+	</div>
+	<div class="form-row" >&nbsp;</div>
+	<div class="form-row">
+
+	  <button type="submit" class="btn btn-primary">提交</button>
+	  &nbsp;
+	  &nbsp;
+	  &nbsp;
+	  <button type="reset" class="btn btn-primary">重置</button>
+	</div>
+</form>
+</div>
+<script>
+	//var menuId = $( "ul.nav" ).first().attr( "id" );
+	var locations,tags;
+	var reqLocation = $.ajax({
+	  url: "get/location",
+	  method: "GET",
+	  contentType: "application/json",
+      dataType: "json"
+    });
+	 
+	reqLocation.done(function( msg ) {
+		locations=msg;
+		var str="<option selected>位置...</option>"
+		for(var i=0;i<msg.length;i++){
+			str+='<option value="'+msg[i].id+'">'+msg[i].name+'</option>'
+		}
+		$("#locationSelect").html(str);
+		
+	});
+	 
+	reqLocation.fail(function( jqXHR, textStatus ) {
+	  alert( "Request failed: " + textStatus );
+	});
+	var reqTag = $.ajax({
+	  url: "get/tags",
+	  method: "GET",
+	  contentType: "application/json",
+      dataType: "json"
+    });
+	 
+	reqTag.done(function( msg ) {
+		tags=msg;
+		var str="<br/>"
+		for(var i=0;i<msg.length;i++){
+			str+='<button type="button" class="btn btn-primary tag" >'+msg[i]+' <span class="badge badge-light">&nbsp;</span></button>'
+		}
+		$("#tagsLabel").html(str);		
+		$(".tag").click(function(){
+			/*
+			var child=$(this).attr("")
+			if(true)//child has ;nbsp
+			{
+				$(this).html();
+			}else{
+				
+			}*/	
+		});
+	});
+	 
+	reqTag.fail(function( jqXHR, textStatus ) {
+	  alert( "Request failed: " + textStatus );
+	});
+	
+</script>
+</body>
+</html>
