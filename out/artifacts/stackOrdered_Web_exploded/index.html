@@ -9,10 +9,10 @@
 
 
 <div class="container">
-<form action="/uploadThing">
+<form action="/uploadThing" method="post" enctype="multipart/form-data">
   <div class="form-group">
     <label for="exampleFormControlFile1">图片上传</label>
-    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="file">
   </div>
   <div class="form-row">
     <div class="col-2">

@@ -23,31 +23,32 @@ import service.ThingService;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Controller
 public class HelloWorldController {
     @Autowired
     Gson gson;
-
-    @RequestMapping(value = { "/uploadThing" }, method = RequestMethod.GET)
-    public String uplaodThing(@RequestParam("name")String name,@RequestParam("location")int position,@RequestParam(value = "use", required = false,defaultValue = "1")int use,
+    final String locationPath="C:\\Users\\xqy\\Desktop\\picture\\store\\";
+    @RequestMapping(value = { "/uploadThing" }, method = RequestMethod.POST)
+    public String uplaodThing(@RequestParam("name")String name,@RequestParam("location")int location,@RequestParam(value = "use", required = false,defaultValue = "1")int use,
      @RequestParam(value = "count", required = false,defaultValue = "1")int count,@RequestParam(value="tag", required = false)String tag,@RequestParam(value = "file", required = false) MultipartFile multipartFile) {
-        String orgName = "";
-        thingService.insertThing(new Thing(name,position,orgName,use==1,count,tag));
-//        multipartFile.getOriginalFilename();
-//
-//        String filePath = "C:\\Users\\xqy\\Desktop\\picture\\" + orgName;
-//        File dest = new File(filePath);
-//        try {
-//            multipartFile.transferTo(dest);
-//        } catch (IllegalStateException e) {
-//            e.printStackTrace();
-//            return "File uploaded failed:" + orgName;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return "File uploaded failed:" + orgName;
-//        }
-         return "index.html";
+        String orgName = multipartFile.getOriginalFilename();
+        System.out.println(name);
+        String filePath=locationPath+new SimpleDateFormat("yy_MM_dd").format(new Date())+"@"+orgName;
+        File dest = new File(filePath);
+        thingService.insertThing(new Thing(name,location,filePath,use==1,count,tag));
+        try {
+            multipartFile.transferTo(dest);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return "File uploaded failed:" + orgName;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "File uploaded fail:"+orgName;
+        }
+         return "redirect:/index.html";
     }
     @RequestMapping(value = { "get/tags" }, method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE + ";charset=utf-8")
     @ResponseBody

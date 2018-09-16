@@ -5,18 +5,19 @@ import java.io.Serializable;
 public class Thing implements Serializable {
     private int id ;
     private String name;
-    private int position;
-    private String location;
+    private int location;
+    private String picture;
     private boolean oftenUsed;
     private int count;
 
-    public Thing(String name, int position, String location, boolean oftenUsed, int count, String attrs) {
+    public Thing(String name, int location, String picture, boolean oftenUsed, int count, String attrs) {
         this.name = name;
-        this.position = position;
         this.location = location;
+        this.picture = picture;
         this.oftenUsed = oftenUsed;
         this.count = count;
         this.attrs = attrs;
+
     }
 
     private String attrs;
@@ -37,20 +38,20 @@ public class Thing implements Serializable {
         this.name = name;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public String getLocation() {
+    public int getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(int location) {
         this.location = location;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public boolean isOftenUsed() {

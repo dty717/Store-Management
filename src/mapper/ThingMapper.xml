@@ -27,7 +27,7 @@
         INSERT INTO Thing
         (东西,位置,图片路径,常用,数量,特性)
         VALUES
-        (#{name}, #{position}, #{location}, #{oftenUsed}, #{count},  #{attrs})
+        (#{name}, #{location}, #{picture}, #{oftenUsed}, #{count},  #{attrs})
     </insert>
 
     <select id="getLocation" resultType="Location">
